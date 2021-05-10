@@ -81,3 +81,23 @@ export const updateUserPosts = async (req, res) => {
         res.status(404).json
     }
 }
+
+export const editUserPost = async (req, res) => {
+    console.log(req.body)
+
+    const user = await User.findById(req.params.id)
+    console.log(user)
+    const post = await user.posts.find(post => post._id == req.body.id)
+    console.log(post)
+    const postIndex = user.posts.indexOf(post)
+    console.log(postIndex)
+    await user.posts.splice(postIndex, 1, req.body)
+    console.log("Posts after slice", user.posts)
+
+    try {
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(404).json
+    }
+
+}
