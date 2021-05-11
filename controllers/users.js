@@ -67,35 +67,34 @@ export const createUser = async (req, res) => {
 
 export const updateUserPosts = async (req, res) => {
     console.log(req.body)
-    const posts = req.body
+    const post = req.body
     const user = await User.findById(req.params.id)
-    user.posts.push(posts)
+    user.posts.push(post)
     
     
     try {
         await user.save()
 
 
-        res.status(200).json(user)
+        res.status(200).json(user.posts[user.posts.length - 1])
     } catch (error) {
         res.status(404).json
     }
 }
 
 export const editUserPost = async (req, res) => {
-    console.log(req.body)
-
+    // console.log("Body", req.body)
+    // console.log(req.params.id)
     const user = await User.findById(req.params.id)
-    console.log(user)
-    const post = await user.posts.find(post => post._id == req.body.id)
-    console.log(post)
-    const postIndex = user.posts.indexOf(post)
-    console.log(postIndex)
-    await user.posts.splice(postIndex, 1, req.body)
-    console.log("Posts after slice", user.posts)
-
+    const post = await user.posts.id(req.body.id)
+    post.title = req.body.title
+    post.content = req.body.content
+    post.tags = req.body.tags
+    
     try {
-        res.status(200).json(user)
+        await user.save()
+
+        res.status(200).json(post)
     } catch (error) {
         res.status(404).json
     }
